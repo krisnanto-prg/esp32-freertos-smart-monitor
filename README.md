@@ -1,35 +1,29 @@
-| Supported Targets | ESP32 | ESP32-C2 | ESP32-C3 | ESP32-C6 | ESP32-H2 | ESP32-P4 | ESP32-S2 | ESP32-S3 |
-| ----------------- | ----- | -------- | -------- | -------- | -------- | -------- | -------- | -------- |
+# ESP32 Smart Environmental Monitor (ESP-IDF & FreeRTOS)
 
-# _Sample project_
+Proyek ini adalah simulasi sistem monitoring lingkungan industri menggunakan **ESP-IDF (v5.x)** dan **FreeRTOS** pada mikrokontroler ESP32. Desain arsitektur ini menerapkan standar industri untuk aplikasi IoT yang andal, aman, dan efisien.
 
-(See the README.md file in the upper level 'examples' directory for more information about examples.)
+## 🚀 Fitur Utama & Konsep Industri
+- **Multitasking Terjadwal (`FreeRTOS Tasks`)**: Memisahkan fungsi pembacaan sensor dan pemrosesan data ke dalam tugas-tugas independen yang berjalan secara paralel.
+- **Inter-Task Communication (`FreeRTOS Queues`)**: Mengirimkan data struktur sensor antar-task secara aman tanpa risiko korupsi data memori.
+- **Resource Locking (`FreeRTOS Mutex Semaphores`)**: Mengamankan output serial (UART/Stdout) agar log pencetakan data dari beberapa task tidak saling tumpang tindih.
+- **Core Pinning (`Dual-Core Optimization`)**: Memanfaatkan arsitektur dual-core ESP32 secara efisien dengan menempatkan aplikasi utama pada Core 1, menjaga Core 0 tetap fokus pada fungsi sistem/jaringan.
+- **Industrial Logging (`esp_log`)**: Menggunakan pustaka logging resmi untuk mempermudah pemantauan status sistem berdasarkan level prioritas (`INFO`, `WARN`, `ERROR`).
 
-This is the simplest buildable example. The example is used by command `idf.py create-project`
-that copies the project to user specified path and set it's name. For more information follow the [docs page](https://docs.espressif.com/projects/esp-idf/en/latest/api-guides/build-system.html#start-a-new-project)
+## 🛠️ Arsitektur Sistem
+- **`Sensor_Read_Task`**: Berjalan setiap 2000ms dengan Prioritas 2 pada Core 1. Berfungsi mensimulasikan pembacaan sensor lingkungan dan mengirim hasilnya ke antrean data (*Queue*).
+- **`Data_Processor_Task`**: Memiliki Prioritas 3 (lebih tinggi) pada Core 1. Menggunakan mode *blocking* (hemat daya) hingga ada data baru masuk ke antrean, lalu memeriksa ambang batas suhu (>30°C) untuk memicu sinyal peringatan (*Alert*).
 
+## 📊 Hasil Build Sistem
+- **Firmware Size**: ~160 KB (Sangat efisien dibandingkan framework Arduino).
+- **Target Chip**: ESP32 Dual-Core.
 
-
-## How to use example
-We encourage the users to use the example as a template for the new projects.
-A recommended way is to follow the instructions on a [docs page](https://docs.espressif.com/projects/esp-idf/en/latest/api-guides/build-system.html#start-a-new-project).
-
-## Example folder contents
-
-The project **sample_project** contains one source file in C language [main.c](main/main.c). The file is located in folder [main](main).
-
-ESP-IDF projects are built using CMake. The project build configuration is contained in `CMakeLists.txt`
-files that provide set of directives and instructions describing the project's source files and targets
-(executable, library, or both). 
-
-Below is short explanation of remaining files in the project folder.
-
-```
-├── CMakeLists.txt
-├── main
-│   ├── CMakeLists.txt
-│   └── main.c
-└── README.md                  This is the file you are currently reading
-```
-Additionally, the sample project contains Makefile and component.mk files, used for the legacy Make based build system. 
-They are not used or needed when building with CMake and idf.py.
+## 💻 Cara Menjalankan Proyek
+1. Clone repositori ini ke komputer Anda:
+   ```bash
+   git clone https://github.com
+   ```
+2. Buka folder proyek menggunakan VS Code yang sudah terinstal ekstensi **ESP-IDF**.
+3. Hubungkan ESP32 ke komputer, lalu lakukan Build, Flash, dan Monitor:
+   ```bash
+   idf.py build flash monitor
+   ```
