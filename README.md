@@ -20,7 +20,7 @@ Proyek ini adalah simulasi sistem monitoring lingkungan industri menggunakan **E
 ## 💻 Cara Menjalankan Proyek
 1. Clone repositori ini ke komputer Anda:
    ```bash
-   git clone https://github.com
+   git clone https://github.com/krisnanto-prg/esp32-freertos-smart-monitor.git
    ```
 2. Buka folder proyek menggunakan VS Code yang sudah terinstal ekstensi **ESP-IDF**.
 3. Hubungkan ESP32 ke komputer, lalu lakukan Build, Flash, dan Monitor:
